@@ -34,6 +34,15 @@ let mkBin l s r =
 
     binNodeDecl.Apply(args)
 
+let getLeft binNode = 
+    binNodeCtor.AccessorDecls.[0].Apply([| binNode |])
+
+let getRight binNode = 
+    binNodeCtor.AccessorDecls.[2].Apply([| binNode |])
+
+let getLabel binNode = 
+    binNodeCtor.AccessorDecls.[1].Apply([| binNode |])
+
 // ----------------------------------------------------------------------------
 // An empty node and a binary node are not the same
 
@@ -73,3 +82,14 @@ let t8 = mkBin t1 "b" t1
 solver.Add(ctx.MkEq(t7, t8))
 solver.Check() // unsat
 solver.Reset()
+
+// ----------------------------------------------------------------------------
+// Testing getters/accessors
+
+let t9 = mkBin t7 "c" t8
+
+// Could also use .ToString() but the fields have a field String
+(getLabel t9).Simplify().String // c
+(getLeft t9 |> getLabel).Simplify().String // a
+(getRight t9 |> getLabel).Simplify().String // b
+
