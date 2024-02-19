@@ -4,6 +4,7 @@ open Microsoft.Z3
 
 let ctx = new Context()
 let solver = ctx.MkSolver()
+let model = solver.Model
 
 // ============================================================================
 // OptionSort
@@ -35,7 +36,7 @@ let isSome (optionsSort: DatatypeSort) (o: Expr) : BoolExpr =
     optionsSort.Recognizers.[1].Apply(o) :?> BoolExpr
 
 // ----------------------------------------------------------------------------
-// Getters
+// Getters/Accessors
 
 let getData (optionsSort: DatatypeSort) (o: Expr) : Expr = 
     optionsSort.Accessors.[1].[0].Apply(o)
@@ -77,4 +78,15 @@ let n = mkNone intOptSort
 (isSome intOptSort n).Simplify().ToString() // "false"
 
 (getData intOptSort n).Simplify().ToString() // "(Data None)"
+
+// ----------------------------------------------------------------------------
+// Example using Solver and Eval
+
+let sUnknown = ctx.MkFreshConst("sUnknown", intOptSort) 
+
+solver.Reset(); solver.Check(ctx.MkEq(s33, sUnknown))
+
+let sKnown = model.Eval(sUnknown, true) 
+
+sKnown.ToString() // "(Some 33)"
 
