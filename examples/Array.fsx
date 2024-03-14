@@ -32,3 +32,6 @@ solver.Model.Eval(ctx.MkSelect(ia1, ctx.MkInt(1)), true).ToString() // "7"
 solver.Model.Eval(ia1, true).ToString() // "(store ((as const (Array Int Int)) 7) 0 3)"
 solver.Model.Eval(ctx.MkSelect(ia1, ctx.MkInt(2)), true).ToString() // "7"
 solver.Model.Eval(ctx.MkSelect(ia1, ctx.MkInt(-1)), true).ToString() // "7"
+
+// TODO Try using string or bool as domain
+//

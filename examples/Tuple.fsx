@@ -16,17 +16,18 @@ let mkTupleSort (name: string) fieldNames fieldSorts =
 
     ctx.MkTupleSort(nameSym, fieldNamesSyms, fieldSorts)
 
-let infoSort = mkTupleSort "Info" [| "Name"; "Age" |] [| ctx.StringSort; ctx.IntSort |]
+let infoSort =
+    mkTupleSort "Info" [| "Name"; "Age" |] [| ctx.StringSort; ctx.IntSort |]
 
-let mkInfo name age = 
+let mkInfo name age =
     let args: Expr array = [| ctx.MkString(name); ctx.MkInt(uint64 age) |]
 
     infoSort.MkDecl.Apply(args)
 
-let getName info = 
+let getName info =
     infoSort.FieldDecls.[0].Apply([| info |])
 
-let getAge info = 
+let getAge info =
     infoSort.FieldDecls.[1].Apply([| info |])
 
 // ----------------------------------------------------------------------------
@@ -36,4 +37,6 @@ let i0 = mkInfo "Markus" 25
 
 (getName i0).Simplify().ToString() // ""Markus""
 (getAge i0).Simplify().ToString() // "25"
+
+i0.Sort.Name.ToString()
 
